@@ -104,20 +104,36 @@ int main(void)
     if (err != GLEW_OK)
         return -1;
 
-    float dataArr[6] = {
+    float dataArr[] = {
         -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f
+         0.5f, -0.5f,
+         0.5f,  0.5f,
+
+        -0.5f,  0.5f,
     };
 
+    unsigned int indicesArr[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+
+    // Create Vertex Buffer
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), dataArr, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), dataArr, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
 
+    // Create Index Buffer
+    unsigned int indexBO;
+    glGenBuffers(1, &indexBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicesArr, GL_STATIC_DRAW);
+
+    // Create Shader
     shaderProgramSource source = parseShader("res/shaders/Basic.shader");
     
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
@@ -129,7 +145,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
