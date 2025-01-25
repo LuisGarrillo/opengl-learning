@@ -5,32 +5,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define GLCall(x) GLClearErrors;\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+#include "Renderer.h"
 
 struct shaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
-
-static void GLClearErrors() 
-{
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError())
-    {
-        std::cout << "[OpenGL Error] (" << error << "): " << 
-            function << " " << file << ": " << line << std::endl;
-        return false;
-    }
-    return true;
-}
 
 static shaderProgramSource parseShader(const std::string& filepath)
 {
@@ -173,7 +153,7 @@ int main(void)
 
     // Get uniform
     int location = glGetUniformLocation(shader, "u_Color");
-    ASSERT(location != -1)
+    ASSERT(location != -1);
     glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f);
 
     float r = 0.0f;
