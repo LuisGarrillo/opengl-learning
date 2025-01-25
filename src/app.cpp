@@ -5,7 +5,10 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+
 #include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 struct shaderProgramSource {
     std::string VertexSource;
@@ -131,19 +134,12 @@ int main(void)
 
 
     // Create Vertex Buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    VertexBuffer vb(dataArr, sizeof(float) * 2 * 4);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
-    glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), dataArr, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
 
     // Create Index Buffer
-    unsigned int indexBO;
-    glGenBuffers(1, &indexBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicesArr, GL_STATIC_DRAW);
+    IndexBuffer ib(indicesArr, 6);
 
     // Create Shader
     shaderProgramSource source = parseShader("res/shaders/Basic.shader");
@@ -176,7 +172,7 @@ int main(void)
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
         glBindVertexArray(vertexAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBO);
+        ib.Bind();
         
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
         
