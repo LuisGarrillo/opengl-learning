@@ -56,11 +56,6 @@ int main(void)
             2, 3, 0
         };
 
-        // Create Vertex Array Object
-        unsigned int vertexAO;
-        glGenVertexArrays(1, &vertexAO);
-        glBindVertexArray(vertexAO);
-
 
         // Create Vertex Buffer
         VertexArray va;
@@ -88,22 +83,19 @@ int main(void)
         vb.Unbind();
         ib.Unbind();
         shader.Unbind();
+        Renderer renderer;
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            glClear(GL_COLOR_BUFFER_BIT);
+            renderer.Clear();
 
             // bind shader
             shader.Bind();
             shader.SetUniform("u_Color", r, 0.3f, 0.8f, 1.0f);
 
-            va.Bind();
-            ib.Bind();
-
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-
+            renderer.Draw(va, ib, shader);
 
             if (r > 1.0f)
                 increment = -0.05f;
