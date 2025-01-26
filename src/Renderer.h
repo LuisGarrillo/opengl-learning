@@ -14,12 +14,22 @@ void GLClearErrors();
 
 bool GLLogCall(const char* function, const char* file, int line);
 
+struct vec2 {
+    float x;
+    float y;
+};
 
 class Renderer
 {
 private:
-
+    //VertexArray VertexArrayR;
+    unsigned int WindowWidth;
+    unsigned int WindowHeight;
 public:
+    Renderer(unsigned int width, unsigned int height);
+    //void DrawRectangle(vec2 position, float width, float height);
     void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
     void Clear() const;
+private:
+    vec2 normalizePosition(vec2 position) const;
 };
